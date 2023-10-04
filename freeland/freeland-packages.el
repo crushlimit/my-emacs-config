@@ -323,13 +323,22 @@
   :ensure t
   :config (which-key-mode))
 
-;;;;;; --- yasnippet --- ;;;;;;
-(use-package yasnippet
+;;;;;; --- with-editor --- ;;;;;;
+(use-package with-editor
   :ensure t
-  :hook
-  ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
   :init
-  (setq yas-snippet-dir "~/.emacs.d/snippets"))
+  (keymap-global-set "<remap> <async-shell-command>"
+                     #'with-editor-async-shell-command)
+  (keymap-global-set "<remap> <shell-command>"
+                     #'with-editor-shell-command))
+
+;;;;;; --- yasnippet --- ;;;;;;
+  (use-package yasnippet
+    :ensure t
+    :hook
+    ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
+    :init
+    (setq yas-snippet-dir "~/.emacs.d/snippets"))
 
 (provide 'freeland-packages)
 ;;; freeland-packages.el ends here
