@@ -65,6 +65,7 @@
     paredit
     slime
     slime-company
+    undo-tree
     vertico
     which-key
     yasnippet
@@ -290,7 +291,7 @@
 ;;;;;; --- slime --- ;;;;;;
 (use-package slime
   :bind
-  ("C-x s" . slime)
+  ("C-c s" . slime)
   :init
   (setq slime-lisp-implementations
 	'(
@@ -299,6 +300,7 @@
 		:coding-system utf-8-unix)
 	  ;; specify CLISP implementation
 	  (clisp ("/opt/homebrew/Cellar/clisp/2.49.92_1/bin/clisp"))))
+  (setq slime-auto-select-connection 'always)
   (setq common-lisp-hyperspec-root
 	"file:///Users/jacky_goodluck/Developer/Programming/LispPrograms/HyperSpec-7-0/HyperSpec/")
   (slime-setup '(slime-fancy slime-company))
@@ -308,6 +310,14 @@
 			 ("\\.lsp\\'" . lisp-mode)
 			 ("\\.cl\\'" . lisp-mode))
 		       auto-mode-alist)))
+
+;;;;;; --- undo-tree --- ;;;;;;
+(use-package undo-tree
+  :ensure t
+  :bind
+  ("C-c u" . #'undo-tree-visualize)
+  :init
+  (global-undo-tree-mode))
 
 ;;;;;; --- vertico --- ;;;;;;
 (use-package vertico

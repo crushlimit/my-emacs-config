@@ -46,7 +46,7 @@
   (setq locale-coding-system 'utf-8)
   ;; set the startup frame size
   (setq initial-frame-alist
-	'((height . 400) (width . 100)))
+	'((height . 400) (width . 120)))
   ;; set the ruler if the input characters over 80
   (setq-default fill-column 80)
   ;; (setq frame-resize-pixelwise t)
@@ -58,8 +58,9 @@
 	;; inhibit-startup-echo-area-message "welcome to the Emacs world!"
 	;; scratch buffer defaults to be org-mode
 	;; initial-major-mode 'org-mode
-	initial-major-mode 'emacs-lisp-mode
-	initial-scratch-message ";; Happy Hacking in the Emacs World!")
+	;; initial-major-mode 'emacs-lisp-mode
+	initial-scratch-message 'common-lisp-mode
+	initial-scratch-message ";; Happy Hacking in Common Lisp...")
   (setq isearch-lazy-count t)
   (column-number-mode)
   (tool-bar-mode -1)
@@ -73,8 +74,9 @@
   :bind
   ("C-x f" . #'recentf-open)
   ("C-x c" . #'display-fill-column-indicator-mode)
-  ("C-x r" . #'restart-emacs)
-  ("C-c b" . #'swap-browser))
+  ("C-c r" . #'restart-emacs)
+  ("C-c b" . #'swap-browser)
+  ("C-c p" . #'list-packages))
 
 (provide 'freeland-ui)
 ;;; freeland-ui.el ends here
