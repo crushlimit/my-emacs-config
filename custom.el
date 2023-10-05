@@ -17,4 +17,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:family "Iosevka Comfy Wide Motion" :foundry "nil" :slant normal :weight medium :height 130 :width expanded))))
- '(fill-column-indicator ((t (:background "#c4c4c4" :foreground "#c4c4c4" :weight thin :height 1)))))
+ '(fill-column-indicator ((t (:background "#c4c4c4" :foreground "#c4c4c4" :weight thin :height 1))))
+ '(whitespace-big-indent ((t (:background "magenta"))))
+ '(whitespace-line ((t (:foreground "magenta"))))
+ '(whitespace-trailing ((t (:background "magenta")))))

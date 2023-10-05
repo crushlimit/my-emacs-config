@@ -218,7 +218,7 @@
   (emacs-lisp-mode . flycheck-mode)
   (lisp-mode . flycheck-mode)
   (flycheck-mode . flycheck-color-mode-line-mode)
-  ;; inline-mode means the diagnostic info will displayed just under the highlighted line
+  ;; inline-mode: the diagnostic info displays just under the highlighted line
   ;; (flycheck-mode . flycheck-inline-mode)
   :init
   (flycheck-mode))
@@ -322,6 +322,15 @@
 (use-package which-key
   :ensure t
   :config (which-key-mode))
+
+;;;;;; --- white-mode --- ;;;;;;
+;; highlight the parts of line exceeding the 'fill-column' 80 limit with magenta
+(use-package whitespace
+  :init
+  (setq whitespace-line-column 80)
+  (setq whitespace-style '(face lines-tail))
+  :hook
+  ((prog-mode text-mode) . whitespace-mode))
 
 ;;;;;; --- with-editor --- ;;;;;;
 (use-package with-editor
