@@ -29,10 +29,12 @@
 
 ;;; Code:
 
-(setq gc-cons-threshold (* 50 1000 1000))
+(setq gc-cons-threshold most-positive-fixnum)
 
 ;; the freeland directory location
-(defvar freeland-dir "~/.emacs.d/freeland")
+;; use 'defvar' here because 'freeland-dir' is dynamic variable determined at
+;; runtime
+(defvar freeland-dir "~/.emacs.d/freeland/")
 
 ;; load all sub-dirs under parent-dir recursively
 (defun freeland-add-subfolders-to-loadpath (parent-dir)
@@ -48,13 +50,15 @@
 (add-to-list 'load-path freeland-dir)
 
 ;; OS verification
-;; (defconst IS-MAC (eq system-type 'darwin))
+(defconst IS-MAC (eq system-type 'darwin))
 ;; (defconst IS-LINUX (eq system-type 'gnu/linux))
 ;; (defconst IS-WINDOWS (memq system-type '(cygwin windows-nt ms-dos)))
 
-;; main keybindings for OS
-(setq mac-option-modifier 'meta)
-(setq mac-command-modifier 'super)
+;; main keybindings for MacOS
+(when IS-MAC
+  (setq mac-option-modifier 'meta)
+  (setq mac-command-modifier 'super)
+  (setq mac-control-modifier 'control))
 
 (require 'freeland-packages)
 (require 'freeland-ui)
@@ -64,6 +68,10 @@
 (load custom-file)
 
 ;; Make GC pauses faster by decreasing the threshold
-(setq gc-cons-threshold (* 2 1000 1000))
+(setq gc-cons-threshold (* 1024 1024 64))
+(garbage-collect)
 
+(message "Emacs startup time is %s" (emacs-init-time))
+
+(provide 'init)
 ;;; init.el ends here

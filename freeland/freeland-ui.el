@@ -55,12 +55,13 @@
   ;; (set-frame-parameter (selected-frame) 'alpha '(95 95))
   ;; clean startup
   (setq inhibit-startup-message t
-	;; inhibit-startup-echo-area-message "welcome to the Emacs world!"
+	inhibit-startup-echo-area-message "welcome to the Emacs world!"
 	;; scratch buffer defaults to be org-mode
-	;; initial-major-mode 'org-mode
+	initial-major-mode 'org-mode
 	;; initial-major-mode 'emacs-lisp-mode
-	initial-scratch-message 'common-lisp-mode
-	initial-scratch-message ";; Happy Hacking in Common Lisp...")
+	;; initial-major-mode 'common-lisp-mode
+	;; initial-scratch-message ";; Happy Hacking in Emacs...")
+	initial-scratch-message nil)
   (setq isearch-lazy-count t)
   (column-number-mode)
   (tool-bar-mode -1)

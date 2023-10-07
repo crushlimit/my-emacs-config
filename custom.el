@@ -6,6 +6,7 @@
  '(blink-cursor-mode nil)
  '(display-fill-column-indicator nil)
  '(display-fill-column-indicator-character 124)
+ '(flycheck-emacs-lisp-load-path 'inherit)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
    '(exec-path-from-shell which-key vertico slime paredit ox-hugo modus-themes magit helpful helm flycheck elisp-demos elfeed easy-hugo ace-window))

@@ -213,6 +213,9 @@
   (exec-path-from-shell-initialize))
 
 ;;;;;; --- flycheck --- ;;;;;;
+;; it's better set 'flycheck-emacs-lisp-load-path' to inherit from 'load-path'
+;; to bypass flycheck error: "cannot open load file: no such file or directory"
+;; this can be customized directly from 'customize-group'
 (use-package flycheck
   :ensure t
   :hook
@@ -269,6 +272,7 @@
 ;;;;;; --- org mode --- ;;;;;;
 (use-package org
   :init
+  (setq org-startup-indented t)
   (setq org-todo-keywords
 	'((sequence "TODO(t)" "VERIFY(v)" "|" "DONE(d)" "CANCELED(c)")))
   (setq org-todo-keyword-faces
@@ -303,7 +307,7 @@
   (setq slime-auto-select-connection 'always)
   (setq common-lisp-hyperspec-root
 	"file:///Users/jacky_goodluck/Developer/Programming/LispPrograms/HyperSpec-7-0/HyperSpec/")
-  (slime-setup '(slime-fancy slime-company))
+  (slime-setup '(slime-fancy slime-company slime-repl))
   :preface
   (set-default 'auto-mode-alist
 	       (append '(("\\.lisp\\'" . lisp-mode)
@@ -337,7 +341,7 @@
 ;; highlight the parts of line exceeding the 'fill-column' 80 limit with magenta
 (use-package whitespace
   :init
-  (setq whitespace-line-column 80)
+  (setq whitespace-line-column 81)
   (setq whitespace-style '(face lines-tail))
   :hook
   ((prog-mode text-mode) . whitespace-mode))
@@ -357,7 +361,7 @@
     :hook
     ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
     :init
-    (setq yas-snippet-dir "~/.emacs.d/snippets"))
+    (defvar yas-snippet-dir "~/.emacs.d/snippets"))
 
 (provide 'freeland-packages)
 ;;; freeland-packages.el ends here
