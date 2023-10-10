@@ -9,7 +9,7 @@
  '(flycheck-emacs-lisp-load-path 'inherit)
  '(global-display-line-numbers-mode t)
  '(package-selected-packages
-   '(exec-path-from-shell which-key vertico slime paredit ox-hugo modus-themes magit helpful helm flycheck elisp-demos elfeed easy-hugo ace-window))
+   '(yasnippet-snippets which-key wfnames vertico undo-tree slime-company shrink-path paredit ox-hugo orderless nerd-icons modus-themes marginalia magit helpful git-timemachine flycheck-inline flycheck-color-mode-line exec-path-from-shell elisp-demos elfeed easy-hugo delight consult-flycheck async all-the-icons-completion ace-window))
  '(slime-company-completion 'fuzzy)
  '(tool-bar-mode nil))
 (custom-set-faces

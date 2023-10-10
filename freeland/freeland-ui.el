@@ -72,12 +72,19 @@
   (recentf-mode)
   ;; add directory includes other .info documents into the default Info directory
   (add-to-list 'Info-directory-list "~/Developer/Emacs-info/")
+  ;; customize the display of modeline for major and minor modes
+  :delight
+  ;; change "Elisp/d" to "EL"
+  (emacs-lisp-mode "EL")
+  ;; completely hide the following modes
+  (eldoc-mode)
   :bind
   ("C-x f" . #'recentf-open)
   ("C-x c" . #'display-fill-column-indicator-mode)
   ("C-c r" . #'restart-emacs)
   ("C-c b" . #'swap-browser)
-  ("C-c p" . #'list-packages))
+  ("C-c p" . #'list-packages)
+  ("C-c i" . #'ibuffer))
 
 (provide 'freeland-ui)
 ;;; freeland-ui.el ends here

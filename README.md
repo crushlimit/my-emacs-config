@@ -1,6 +1,7 @@
-# My Personal Emacs Configuration
+# A Minimum Feasible Emacs Configuration Starter Kits
 
-Aim to satisfy my personal needs to Emacs by slim, simple and superb principle.
+Aim to satisfy personal needs with full-fleged common functionalities on Emacs,
+and by slim, simple and superb principle.
 
 _Slim_ means that avoid bloated third-parties configuration from others, get rid
 of those unnecessary features and packages, keep the most minimum packages but
@@ -16,3 +17,5 @@ extend in the following days.
 
 Such personal configuration packages are named as *freeland*, as the metaphor of
 a whole free world exists with free thinking and spirits.
+
+### *NOTE:* 'use-package' is heavily used in everywhere.

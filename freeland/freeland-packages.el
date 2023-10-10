@@ -32,79 +32,12 @@
 (require 'cl-lib)
 (require 'package)
 
-;; Locate package repos from China as GFW blocks.
+;; emacs package repositories
 (setq package-archives
-      '(("gnu" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
-        ("melpa"  . "https://melpa.org/packages/")))
+      '(("gnu" . "https://elpa.gnu.org/packages/")
+        ("melpa" . "https://melpa.org/packages/")
+	("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 (package-initialize)
-
-;; list all needed packages (on expanding by will)
-(defvar packages-needed
-  '(;; the needed packages
-    ace-window
-    all-the-icons
-    all-the-icons-completion
-    avy
-    company
-    consult
-    consult-flycheck
-    easy-hugo
-    elfeed
-    elisp-demos
-    exec-path-from-shell
-    flycheck
-    flycheck-color-mode-line
-    flycheck-inline
-    git-timemachine
-    helpful
-    magit
-    marginalia
-    modus-themes
-    orderless
-    ox-hugo
-    paredit
-    slime
-    slime-company
-    undo-tree
-    vertico
-    which-key
-    yasnippet
-    yasnippet-snippets
-    )
-  "A list of packages are required to be installed in this configuration.")
-
-;; Check if all the needed packages above installed or not
-(defun packages-needed-installed-p (packages)
-  "Check if ALL PACKAGES are installed or not."
-  (cl-every #'package-installed-p packages))
-
-;; check if any single package has been installed or not. If not, add the package
-;; into the needed packages list
-(defun require-single-package (package)
-  "Install PACKAGE unless it has been already installed."
-  (unless (memq package packages-needed)
-    (add-to-list 'packages-needed package))
-  (unless (package-installed-p package)
-    (package-install package)))
-
-;; check if any packages have been installed or not. If not, add them into the
-;; needed packages list
-(defun require-multi-packages (packages)
-  "Install multiple PACKAGES unless they've been already installed."
-  (mapc #'require-single-package packages))
-
-;; install the packages
-(defun install-packages-needed (packages)
-  "Install all PACKAGES needed."
-  (unless (packages-needed-installed-p packages)
-    (message "%s" "Refreshing the package database to check the new version...")
-    (package-refresh-contents)
-    (message "%s" " done.")
-    ;; install all of them
-    (require-multi-packages packages)))
-
-;; just do it: install all of the needed packages
-(install-packages-needed packages-needed)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;; configuration on packages ;;;;;;;;;;;;;;;;;;;;
@@ -125,10 +58,12 @@
 
 ;;;;;; --- all-the-icons --- ;;;;;;
 (use-package all-the-icons
+  :ensure t
   :demand t)
 
  ;;;;;; --- all-the-icons-completion --- ;;;;;;
 (use-package all-the-icons-completion
+  :ensure t
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init
@@ -137,6 +72,7 @@
 
 ;;;;;; --- company --- ;;;;;;
 (use-package company
+  :ensure t
   :demand t
   :init
   (setq company-show-quick-access t)
@@ -144,10 +80,12 @@
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
   :config
-  (global-company-mode))
+  (global-company-mode)
+  :delight)
 
 ;;;;;; --- consult --- ;;;;;;
 (use-package consult
+  :ensure t
   :bind
   ("C-c M-x" . consult-mode-command)
   ("C-x b" . consult-buffer)
@@ -180,9 +118,9 @@
   )
 
 ;; `ox-hugo' configuration
-;; (use-package ox-hugo
-;;   :ensure t
-;;   :after ox)
+(use-package ox-hugo
+  :ensure t
+  :after ox)
 
 ;;;;;; --- elfeed --- ;;;;;;
 (use-package elfeed
@@ -244,22 +182,31 @@
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
+  :ensure t
   :defer t
   :init (setq magit-refresh-status-buffer nil)
   :bind (("C-x g" . magit-status)))
 
 ;;;;;; --- modus theme --- ;;;;;;
 (use-package modus-themes
+  :ensure t
   :init
   (setq modus-themes-org-blocks 'gray-background))
 
 ;;;;;; --- marginalia --- ;;;;;;
 (use-package marginalia
+  :ensure t
   :custom
   (marginalia-max-relative-age 0)
   (marginalia-align 'right)
   :init
   (marginalia-mode))
+
+;;;;;; --- markdown --- ;;;;;;
+(use-package markdown-mode
+  :ensure t
+  :mode ("README\\.md\\'" . gfm-mode)
+  :init (setq markdown-command "multimarkdown"))
 
 ;;;;;; --- orderless --- ;;;;;;
 (use-package orderless
@@ -271,6 +218,7 @@
 
 ;;;;;; --- org mode --- ;;;;;;
 (use-package org
+  :ensure t
   :init
   (setq org-startup-indented t)
   (setq org-todo-keywords
@@ -290,10 +238,12 @@
   (ielm-mode . paredit-mode)
   (lisp-mode . paredit-mode)
   (slime-mode . paredit-mode)
-  (slime-repl-mode . paredit-mode))
+  (slime-repl-mode . paredit-mode)
+  :delight)
 
 ;;;;;; --- slime --- ;;;;;;
 (use-package slime
+  :ensure t
   :bind
   ("C-c s" . slime)
   :init
@@ -321,10 +271,12 @@
   :bind
   ("C-c u" . #'undo-tree-visualize)
   :init
-  (global-undo-tree-mode))
+  (global-undo-tree-mode)
+  :delight)
 
 ;;;;;; --- vertico --- ;;;;;;
 (use-package vertico
+  :ensure t
   :custom
   (vertico-count 13)
   (vertico-resize t)
@@ -340,11 +292,12 @@
 ;;;;;; --- white-mode --- ;;;;;;
 ;; highlight the parts of line exceeding the 'fill-column' 80 limit with magenta
 (use-package whitespace
+  :ensure t
   :init
   (setq whitespace-line-column 81)
   (setq whitespace-style '(face lines-tail))
   :hook
-  ((prog-mode text-mode) . whitespace-mode))
+  ((prog-mode text-mode gfm-mode) . whitespace-mode))
 
 ;;;;;; --- with-editor --- ;;;;;;
 (use-package with-editor
