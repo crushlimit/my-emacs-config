@@ -142,6 +142,10 @@
   (setq-default elfeed-search-filter "@3-days-ago +unread")
   (setf url-queue-timeout 30))
 
+;;;;;; --- elisp-demos --- ;;;;;;
+(use-package elisp-demos
+  :ensure t)
+
 ;;;;;; --- exec-path-from-shell --- ;;;;;;
 ;;; ensure environment variables inside Emacs the same as in the user's shell.
 ;;; if `(getenv "SHELL ")` in Emacs points at 'bash' or 'zsh', it works fine.
@@ -159,6 +163,7 @@
   :hook
   (emacs-lisp-mode . flycheck-mode)
   (lisp-mode . flycheck-mode)
+  (cperl-mode . flycheck-mode)
   (flycheck-mode . flycheck-color-mode-line-mode)
   ;; inline-mode: the diagnostic info displays just under the highlighted line
   ;; (flycheck-mode . flycheck-inline-mode)
@@ -178,7 +183,21 @@
    ("C-h r" . helpful-macro)
    ("C-h <tab>" . info-display-manual))
   :config
-  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update))
+  (advice-add 'helpful-update :after #'elisp-demos-advice-helpful-update)
+  :requires
+  (elisp-demos))
+
+;;;;;; --- lsp --- ;;;;;;
+(use-package lsp-mode
+  :ensure t
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook
+  ;; use Perlnavigator as the default language server of Perl
+  (cperl-mode . lsp-deferred)
+  (lsp-mode . lsp-enable-which-key-integration)
+  :commands
+  (lsp lsp-deferred))
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
@@ -207,6 +226,13 @@
   :ensure t
   :mode ("README\\.md\\'" . gfm-mode)
   :init (setq markdown-command "multimarkdown"))
+
+;;;;;; --- markdown-preview-mode --- ;;;;;;
+(use-package markdown-preview-mode
+  :ensure t
+  :requires (markdown-mode)
+  :hook
+  (gfm-mode . markdown-preview-mode))
 
 ;;;;;; --- orderless --- ;;;;;;
 (use-package orderless
@@ -239,7 +265,15 @@
   (lisp-mode . paredit-mode)
   (slime-mode . paredit-mode)
   (slime-repl-mode . paredit-mode)
+  ;; (cperl-mode . paredit-mode)
   :delight)
+
+;;;;;; --- savehist --- ;;;;;;
+;; persist history over Emacs restarts. Verico sorts by history position.
+(use-package savehist
+  :ensure t
+  :init
+  (savehist-mode))
 
 ;;;;;; --- slime --- ;;;;;;
 (use-package slime
@@ -278,7 +312,7 @@
 (use-package vertico
   :ensure t
   :custom
-  (vertico-count 13)
+  (vertico-count 10)
   (vertico-resize t)
   (vertico-cycle nil)
   :config

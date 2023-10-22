@@ -70,6 +70,8 @@
   (blink-cursor-mode -1)
   (global-hl-line-mode)
   (recentf-mode)
+  ;; use extended and enhanced perl mode
+  (fset 'perl-mode 'cperl-mode)
   ;; add directory includes other .info documents into the default Info directory
   (add-to-list 'Info-directory-list "~/Developer/Emacs-info/")
   ;; customize the display of modeline for major and minor modes
@@ -84,7 +86,8 @@
   ("C-c r" . #'restart-emacs)
   ("C-c b" . #'swap-browser)
   ("C-c p" . #'list-packages)
-  ("C-c i" . #'ibuffer))
+  ("C-c i" . #'ibuffer)
+  ("C-c t" . #'eshell))
 
 (provide 'freeland-ui)
 ;;; freeland-ui.el ends here

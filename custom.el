@@ -4,14 +4,32 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
+ '(cperl-auto-newline t)
+ '(cperl-autoindent-on-semi nil)
+ '(cperl-electric-backspace-untabify t)
+ '(cperl-electric-parens t)
+ '(cperl-electric-parens-string "({[]})<'\"")
+ '(cperl-extra-newline-before-brace nil)
+ '(cperl-extra-newline-before-brace-multiline nil)
+ '(cperl-font-lock t)
+ '(cperl-highlight-variables-indiscriminately t)
+ '(cperl-indent-comment-at-column-0 t)
+ '(cperl-indent-parens-as-block nil)
+ '(cperl-indent-subs-specially nil)
+ '(cperl-indent-wrt-brace nil)
+ '(custom-safe-themes
+   '("58264887d7ab17702ef85bbd96e11bd7f613622ff9c63990be860b958c978f09" "3d94d6d1a1c23113a60c8496c9aed094dbc2695f219e8127bb168d17b1e6dab3" "4b026ac68a1aa4d1a91879b64f54c2490b4ecad8b64de5b1865bca0addd053d9" "88cb0f9c0c11dbb4c26a628d35eb9239d1cf580cfd28e332e654e7f58b4e721b" default))
  '(display-fill-column-indicator nil)
  '(display-fill-column-indicator-character 124)
+ '(eshell-prefer-lisp-variables t)
  '(flycheck-emacs-lisp-load-path 'inherit)
  '(global-display-line-numbers-mode t)
+ '(markdown-command "markdown")
  '(package-selected-packages
    '(yasnippet-snippets which-key wfnames vertico undo-tree slime-company shrink-path paredit ox-hugo orderless nerd-icons modus-themes marginalia magit helpful git-timemachine flycheck-inline flycheck-color-mode-line exec-path-from-shell elisp-demos elfeed easy-hugo delight consult-flycheck async all-the-icons-completion ace-window))
  '(slime-company-completion 'fuzzy)
- '(tool-bar-mode nil))
+ '(tool-bar-mode nil)
+ '(vertico-sort-function 'vertico-sort-history-length-alpha))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
