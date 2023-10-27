@@ -69,7 +69,6 @@
   (load-theme 'modus-operandi-tritanopia t)
   (blink-cursor-mode -1)
   (global-hl-line-mode)
-  (recentf-mode)
   ;; use extended and enhanced perl mode
   (fset 'perl-mode 'cperl-mode)
   ;; add directory includes other .info documents into the default Info directory
@@ -83,6 +82,8 @@
   :bind
   ("C-x f" . #'recentf-open)
   ("C-x c" . #'display-fill-column-indicator-mode)
+  ("C-x C-p" . #'cperl-perldoc)
+  ("C-x e" . #'eww)
   ("C-c r" . #'restart-emacs)
   ("C-c b" . #'swap-browser)
   ("C-c p" . #'list-packages)

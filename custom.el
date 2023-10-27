@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(Man-coding-system 'utf-8)
  '(blink-cursor-mode nil)
  '(cperl-auto-newline t)
  '(cperl-autoindent-on-semi nil)
@@ -24,9 +25,17 @@
  '(eshell-prefer-lisp-variables t)
  '(flycheck-emacs-lisp-load-path 'inherit)
  '(global-display-line-numbers-mode t)
- '(markdown-command "markdown")
+ '(markdown-command "markdown" t)
  '(package-selected-packages
    '(yasnippet-snippets which-key wfnames vertico undo-tree slime-company shrink-path paredit ox-hugo orderless nerd-icons modus-themes marginalia magit helpful git-timemachine flycheck-inline flycheck-color-mode-line exec-path-from-shell elisp-demos elfeed easy-hugo delight consult-flycheck async all-the-icons-completion ace-window))
+ '(recentf-auto-cleanup 'never)
+ '(recentf-initialize-file-name-history t)
+ '(recentf-keep '(ignore))
+ '(recentf-max-menu-items 100)
+ '(recentf-max-saved-items 100)
+ '(recentf-menu-filter 'recentf-show-basenames)
+ '(recentf-save-file "~/Developer/Docs/my-emacs-configs/recent-file")
+ '(recentf-save-file-modes nil)
  '(slime-company-completion 'fuzzy)
  '(tool-bar-mode nil)
  '(vertico-sort-function 'vertico-sort-history-length-alpha))

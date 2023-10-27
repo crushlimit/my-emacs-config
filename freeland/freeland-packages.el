@@ -135,9 +135,10 @@
           ("https://cn.nytimes.com/rss/" news chinese)
           ("http://www.bbc.co.uk/zhongwen/simp/index.xml" news chinese)
           ("http://feeds.feedburner.com/reuters/CNTopNews" news chinese)
-          ("https://news.ycombinator.com/rss" hacker english)
+          ("https://news.ycombinator.com/rss" tech hacker english)
           ("https://nullprogram.com/feed/" programming english)
           ("https://stallman.org/rss/rss.xml" rms english)
+	  ("https://www.solidot.org/index.rss" tech chinese)
           ))
   (setq-default elfeed-search-filter "@3-days-ago +unread")
   (setf url-queue-timeout 30))
@@ -193,11 +194,14 @@
   :init
   (setq lsp-keymap-prefix "C-c l")
   :hook
-  ;; use Perlnavigator as the default language server of Perl
   (cperl-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :commands
-  (lsp lsp-deferred))
+  (lsp lsp-deferred)
+  :config
+  ;; use 'PLS' as the default language server of Perl, which is the best one of
+  ;; three ('PLS', 'PerlNavigator', 'Perl::LanguageServer'
+  (setq lsp-pls-executable "~/perl5/bin/pls"))
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
