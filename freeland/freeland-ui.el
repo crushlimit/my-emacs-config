@@ -46,7 +46,7 @@
   (setq locale-coding-system 'utf-8)
   ;; set the startup frame size
   (setq initial-frame-alist
-	'((height . 400) (width . 120)))
+	'((height . 300) (width . 100)))
   ;; set the ruler if the input characters over 80
   (setq-default fill-column 80)
   ;; (setq frame-resize-pixelwise t)
@@ -55,7 +55,6 @@
   ;; (set-frame-parameter (selected-frame) 'alpha '(95 95))
   ;; clean startup
   (setq inhibit-startup-message t
-	inhibit-startup-echo-area-message "welcome to the Emacs world!"
 	;; scratch buffer defaults to be org-mode
 	initial-major-mode 'org-mode
 	;; initial-major-mode 'emacs-lisp-mode
@@ -66,9 +65,13 @@
   (column-number-mode)
   (tool-bar-mode -1)
   (global-display-line-numbers-mode 1)
-  (load-theme 'modus-operandi-tritanopia t)
-  (blink-cursor-mode -1)
-  (global-hl-line-mode)
+  ;; (load-theme 'modus-operandi-tritanopia t)
+  ;; (load-theme 'zenburn t)
+  ;; (load-theme 'leuven t)
+  ;; (blink-cursor-mode +1)
+  ;; (global-hl-line-mode)
+  ;; turn off the annoying bell and make the world quiet.
+  (setq ring-bell-function 'ignore)
   ;; use extended and enhanced perl mode
   (fset 'perl-mode 'cperl-mode)
   ;; add directory includes other .info documents into the default Info directory
@@ -79,16 +82,20 @@
   (emacs-lisp-mode "EL")
   ;; completely hide the following modes
   (eldoc-mode)
+  ;; set C language default indentation style
+  (defvar c-indentation-style "k&r")
   :bind
   ("C-x f" . #'recentf-open)
-  ("C-x c" . #'display-fill-column-indicator-mode)
+  ;; ("C-x c" . #'display-fill-column-indicator-mode)
+  ("C-x c" . #'compile)
   ("C-x C-p" . #'cperl-perldoc)
   ("C-x e" . #'eww)
   ("C-c r" . #'restart-emacs)
   ("C-c b" . #'swap-browser)
   ("C-c p" . #'list-packages)
   ("C-c i" . #'ibuffer)
-  ("C-c t" . #'eshell))
+  ("C-c t" . #'eshell)
+  ("C-c f" . #'avy-goto-char))
 
 (provide 'freeland-ui)
 ;;; freeland-ui.el ends here

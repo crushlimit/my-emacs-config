@@ -36,16 +36,6 @@
 ;; runtime
 (defvar freeland-dir "~/.emacs.d/freeland/")
 
-;; load all sub-dirs under parent-dir recursively
-(defun freeland-add-subfolders-to-loadpath (parent-dir)
-  "Add all level PARENT-DIR subdirs to the \\'load-path\\'."
-  (dolist (f (directory-files parent-dir))
-    (let ((name (expand-file-name f parent-dir)))
-      (when (and (file-directory-p name)
-                 (not (string-prefix-p "." f)))
-        (add-to-list 'load-path name)
-        (freeland-add-subfolders-to-loadpath name)))))
-
 ;; put the freeland directory into 'load-path'
 (add-to-list 'load-path freeland-dir)
 
@@ -60,12 +50,17 @@
   (setq mac-command-modifier 'super)
   (setq mac-control-modifier 'control))
 
-(require 'freeland-packages)
-(require 'freeland-ui)
-
-;; put customization (custom-set-variables) into custom.el
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+;; Emacs GUI version
+(if (display-graphic-p)
+    (progn
+      (require 'freeland-ui)
+      (require 'freeland-packages)
+      (load-theme 'leuven t)
+      ;; (load-theme 'leuven-dark t)
+      ;; (load-theme 'zenburn t)
+      ;; put customization (custom-set-variables) into custom.el
+      (setq custom-file "~/.emacs.d/custom.el")
+      (load custom-file)))
 
 ;; Make GC pauses faster by decreasing the threshold
 (setq gc-cons-threshold (* 1024 1024 64))

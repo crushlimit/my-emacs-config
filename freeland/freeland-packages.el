@@ -48,7 +48,7 @@
 (use-package ace-window
   :ensure t
   :bind
-  (("s-o" . ace-window)
+  (("C-x o" . ace-window)
    ("s-m" . ace-swap-window)
    ("s-=" . balance-windows))
   :init
@@ -93,7 +93,7 @@
   ("C-x ." . isearch-forward-thing-at-point)
   ;; M-g bindings in 'goto-map'
   ("M-g e" . consult-compile-error)
-  ("M-g f" . consult-flycheck)
+  ("M-g f" . consult-flymake)
   ("M-g o" . consult-outline)
   ("M-g m" . consult-mark)
   ("M-g k" . consult-global-mark)
@@ -101,6 +101,16 @@
   ("M-g I" . consult-imenu-multi)
   :hook
   (completion-list-mode . consult-preview-at-point-mode))
+
+;;;;;; --- dap-mode --- ;;;;;;
+(use-package dap-mode
+  :ensure t
+  :hook
+  ((c-mode c++-mode) . dap-mode)
+  (dap-mode . dap-ui-mode)
+  :config
+  (setq dap-auto-configure-features '(sessions locals controls tooltip))
+  :delight)
 
 ;;;;;; --- easy-hugo --- ;;;;;;
 (use-package easy-hugo
@@ -130,22 +140,38 @@
   :init
   (setq elfeed-feeds
 	'(("https://planet.emacslife.com/atom.xml" emacs english)
+	  ("https://rss.slashdot.org/Slashdot/slashdotMain" geek)
           ("https://chinadigitaltimes.net/chinese/feed/" politics chinese)
-          ("https://yibaochina.com/?feed=rss2" politics chinese)
-          ("https://cn.nytimes.com/rss/" news chinese)
-          ("http://www.bbc.co.uk/zhongwen/simp/index.xml" news chinese)
-          ("http://feeds.feedburner.com/reuters/CNTopNews" news chinese)
-          ("https://news.ycombinator.com/rss" tech hacker english)
+          ;; ("https://yibaochina.com/?feed=rss2" politics chinese)
+          ;; ("https://cn.nytimes.com/rss/" news chinese)
+          ;; ("http://www.bbc.co.uk/zhongwen/simp/index.xml" news chinese)
+          ;; ("http://feeds.feedburner.com/reuters/CNTopNews" news chinese)
+          ("https://news.ycombinator.com/rss" geek english)
           ("https://nullprogram.com/feed/" programming english)
-          ("https://stallman.org/rss/rss.xml" rms english)
-	  ("https://www.solidot.org/index.rss" tech chinese)
-          ))
-  (setq-default elfeed-search-filter "@3-days-ago +unread")
+          ;; ("https://stallman.org/rss/rss.xml" rms english)
+	  ("https://www.solidot.org/index.rss" geek chinese)))
+  (setq-default elfeed-search-filter "@3-days-ago +unread +chinese")
   (setf url-queue-timeout 30))
 
 ;;;;;; --- elisp-demos --- ;;;;;;
 (use-package elisp-demos
   :ensure t)
+
+;;;;;; --- elpy --- ;;;;;;
+;; python-ide
+(use-package elpy
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'python (elpy-enable))
+  (with-eval-after-load 'python (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)
+				      elpy-rpc-python-command "/opt/homebrew/bin/python3.11"
+				      python-shell-interpreter "/opt/homebrew/bin/python3.11"
+				      python-shell-interpreter-args "-i"))
+  ;; bypass the following annoying warning in 'elpy':
+  ;; Warning (python): "Your ‘python-shell-interpreter’ doesn’t seem to support readline,
+  ;; yet ‘python-shell-completion-native-enable’ was t, ..."
+  (setq python-shell-completion-native-enable nil))
 
 ;;;;;; --- exec-path-from-shell --- ;;;;;;
 ;;; ensure environment variables inside Emacs the same as in the user's shell.
@@ -165,6 +191,7 @@
   (emacs-lisp-mode . flycheck-mode)
   (lisp-mode . flycheck-mode)
   (cperl-mode . flycheck-mode)
+  (elpy-mode . flycheck-mode)
   (flycheck-mode . flycheck-color-mode-line-mode)
   ;; inline-mode: the diagnostic info displays just under the highlighted line
   ;; (flycheck-mode . flycheck-inline-mode)
@@ -193,15 +220,25 @@
   :ensure t
   :init
   (setq lsp-keymap-prefix "C-c l")
+  ;; (setq lsp-inlay-hint-enable t)
   :hook
   (cperl-mode . lsp-deferred)
+  ;; (c++-mode . lsp-deferred)
+  ;; (c-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :commands
   (lsp lsp-deferred)
   :config
+  ;; (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
   ;; use 'PLS' as the default language server of Perl, which is the best one of
   ;; three ('PLS', 'PerlNavigator', 'Perl::LanguageServer'
   (setq lsp-pls-executable "~/perl5/bin/pls"))
+
+;;;;;; --- eglot --- ;;;;;;
+(use-package eglot
+  :hook
+  (c++-mode . eglot-ensure)
+  (c-mode . eglot-ensure))
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
