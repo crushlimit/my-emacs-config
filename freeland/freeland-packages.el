@@ -79,6 +79,7 @@
   (setq company-tooltip-limit 10)
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
+  (defvar company-cmake-executable "/opt/homebrew/bin/cmake")
   :config
   (global-company-mode)
   :delight)
@@ -93,7 +94,7 @@
   ("C-x ." . isearch-forward-thing-at-point)
   ;; M-g bindings in 'goto-map'
   ("M-g e" . consult-compile-error)
-  ("M-g f" . consult-flymake)
+  ("M-g f" . consult-flycheck)
   ("M-g o" . consult-outline)
   ("M-g m" . consult-mark)
   ("M-g k" . consult-global-mark)
@@ -127,11 +128,6 @@
   (setq easy-hugo-org-header t)
   )
 
-;; `ox-hugo' configuration
-(use-package ox-hugo
-  :ensure t
-  :after ox)
-
 ;;;;;; --- elfeed --- ;;;;;;
 (use-package elfeed
   :ensure t
@@ -140,7 +136,7 @@
   :init
   (setq elfeed-feeds
 	'(("https://planet.emacslife.com/atom.xml" emacs english)
-	  ("https://rss.slashdot.org/Slashdot/slashdotMain" geek)
+	  ("https://rss.slashdot.org/Slashdot/slashdotMain" geek english)
           ("https://chinadigitaltimes.net/chinese/feed/" politics chinese)
           ;; ("https://yibaochina.com/?feed=rss2" politics chinese)
           ;; ("https://cn.nytimes.com/rss/" news chinese)
@@ -165,8 +161,8 @@
   :init
   (with-eval-after-load 'python (elpy-enable))
   (with-eval-after-load 'python (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)
-				      elpy-rpc-python-command "/opt/homebrew/bin/python3.11"
-				      python-shell-interpreter "/opt/homebrew/bin/python3.11"
+				      elpy-rpc-python-command "/opt/homebrew/bin/python3.12"
+				      python-shell-interpreter "/opt/homebrew/bin/python3.12"
 				      python-shell-interpreter-args "-i"))
   ;; bypass the following annoying warning in 'elpy':
   ;; Warning (python): "Your ‘python-shell-interpreter’ doesn’t seem to support readline,
@@ -223,6 +219,7 @@
   ;; (setq lsp-inlay-hint-enable t)
   :hook
   (cperl-mode . lsp-deferred)
+  (rust-mode . lsp-deferred)
   ;; (c++-mode . lsp-deferred)
   ;; (c-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
@@ -232,13 +229,17 @@
   ;; (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
   ;; use 'PLS' as the default language server of Perl, which is the best one of
   ;; three ('PLS', 'PerlNavigator', 'Perl::LanguageServer'
-  (setq lsp-pls-executable "~/perl5/bin/pls"))
+  (setq lsp-pls-executable "~/perl5/bin/pls")
+  (setq lsp-inlay-hint-enable t)
+  ;; Rust specific
+  (setq lsp-rust-analyzer-display-parameter-hints t)
+  (setq lsp-rust-analyzer-diagnostics-enable-experimental t))
 
 ;;;;;; --- eglot --- ;;;;;;
 (use-package eglot
+  :demand t
   :hook
-  (c++-mode . eglot-ensure)
-  (c-mode . eglot-ensure))
+  ((c-ts-mode c++-mode cmake-mode) . eglot-ensure))
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
@@ -296,18 +297,42 @@
   (setq org-log-done 'time)
   (org-babel-do-load-languages 'org-babel-load-languages '((lisp . t))))
 
+;;;;;; --- org-roam --- ;;;;;;
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-directory (file-truename "~/org-roam"))
+  (org-roam-db-autosync-mode))
+
+;;;;;; --- ox-hugo --- ;;;;;;
+(use-package ox-hugo
+  :ensure t
+  :after ox)
+
 ;;;;;; --- paredit --- ;;;;;;
 (use-package paredit
   :ensure t
   :demand
   :hook
   (emacs-lisp-mode . paredit-mode)
-  (ielm-mode . paredit-mode)
+  ;; (ielm-mode . paredit-mode)
   (lisp-mode . paredit-mode)
   (slime-mode . paredit-mode)
   (slime-repl-mode . paredit-mode)
+  (racket-mode . paredit-mode)
+  (racket-repl-mode . paredit-mode)
   ;; (cperl-mode . paredit-mode)
   :delight)
+
+;;;;;; --- rust --- ;;;;;;
+(use-package rustic
+  :ensure t
+  ;; :init
+  ;; (setq rustic-lsp-client 'eglot)
+  :config
+  (remove-hook 'rustic-mode-hook 'flymake-mode)
+  :custom
+  (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer")))
 
 ;;;;;; --- savehist --- ;;;;;;
 ;; persist history over Emacs restarts. Verico sorts by history position.
@@ -321,13 +346,15 @@
   :ensure t
   :bind
   ("C-c s" . slime)
+  ;; :hook
+  ;; (slime-repl-mode . lisp-mode)
   :init
   (setq slime-lisp-implementations
 	'(
-	  ;; specify SBCL implementation
-	  (sbcl ("/opt/homebrew/Cellar/sbcl/2.3.4/bin/sbcl")
+	  ;; specify SBCL and keep the startup quiet (no more message)
+	  (sbcl ("/opt/homebrew/Cellar/sbcl/2.4.4/bin/sbcl" "--noinform")
 		:coding-system utf-8-unix)
-	  ;; specify CLISP implementation
+	  ;; specify CLISP
 	  (clisp ("/opt/homebrew/Cellar/clisp/2.49.92_1/bin/clisp"))))
   (setq slime-auto-select-connection 'always)
   (setq common-lisp-hyperspec-root
@@ -350,6 +377,7 @@
   :delight)
 
 ;;;;;; --- vertico --- ;;;;;;
+;;;;;; show information in minibuffer
 (use-package vertico
   :ensure t
   :custom
@@ -360,6 +388,7 @@
   (vertico-mode))
 
 ;;;;;; --- which-key --- ;;;;;;
+;;;;;; a dashboard for displaying possible keymap
 (use-package which-key
   :ensure t
   :config (which-key-mode))
@@ -384,12 +413,13 @@
                      #'with-editor-shell-command))
 
 ;;;;;; --- yasnippet --- ;;;;;;
-  (use-package yasnippet
-    :ensure t
-    :hook
-    ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
-    :init
-    (defvar yas-snippet-dir "~/.emacs.d/snippets"))
+;;;;;; a auto-completion template
+(use-package yasnippet
+  :ensure t
+  :hook
+  ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
+  :init
+  (defvar yas-snippet-dir "~/.emacs.d/snippets"))
 
 (provide 'freeland-packages)
 ;;; freeland-packages.el ends here

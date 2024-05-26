@@ -29,7 +29,9 @@
 
 ;;; Code:
 
+;; Make GC pauses faster by decreasing the threshold
 (setq gc-cons-threshold most-positive-fixnum)
+;; (setq gc-cons-threshold (* 50 1000 1000))
 
 ;; the freeland directory location
 ;; use 'defvar' here because 'freeland-dir' is dynamic variable determined at
@@ -53,20 +55,26 @@
 ;; Emacs GUI version
 (if (display-graphic-p)
     (progn
+      (setq custom-file "~/.emacs.d/custom.el")
+      (load custom-file)
       (require 'freeland-ui)
       (require 'freeland-packages)
-      (load-theme 'leuven t)
       ;; (load-theme 'leuven-dark t)
-      ;; (load-theme 'zenburn t)
+      (load-theme 'spacemacs-light t)
       ;; put customization (custom-set-variables) into custom.el
-      (setq custom-file "~/.emacs.d/custom.el")
-      (load custom-file)))
+      ))
 
-;; Make GC pauses faster by decreasing the threshold
-(setq gc-cons-threshold (* 1024 1024 64))
-(garbage-collect)
+;; use tree-sitter library to parse C or C++ source code
+;; (setq major-mode-remap-alist
+;;       '((c-mode . c-ts-mode)
+;; 	))
+
+;; (setq c-default-style "stroustrup")
 
 (message "Emacs startup time is %s" (emacs-init-time))
+
+(setq gc-cons-threshold (* 2 1000 1000))
+;; (garbage-collect)
 
 (provide 'init)
 ;;; init.el ends here

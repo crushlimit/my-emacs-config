@@ -40,6 +40,36 @@
     (setq browse-url-browser-function 'browse-url-default-macosx-browser)
     (message "Browser is now MacOS SAFARI.")))
 
+;; Set default fonts, CJK fonts and emoji fonts
+(defun my/set-fonts (default-font-name
+                     default-font-height
+                     cjk-font-name
+                     cjk-font-scale
+                     emoji-font-name
+                     emoji-font-scale)
+  "Helper function to set the default, CJK and Emoji fonts."
+  ;; Set the default font
+  (when (member default-font-name (font-family-list))
+    (set-face-attribute 'default nil
+                        :family default-font-name
+                        :height default-font-height)
+    (set-frame-font default-font-name nil t))
+
+  ;; Set the CJK font in the default fontset.
+  (when (member cjk-font-name (font-family-list))
+    (dolist (script (list 'han 'kana 'cjk-misc))
+      (set-fontset-font t script cjk-font-name)))
+
+  ;; Set the Emoji font in the default fontset.
+  (when (member emoji-font-name (font-family-list))
+    (set-fontset-font t 'emoji emoji-font-name))
+
+  ;; Rescale the CJK and emoji fonts.
+  (setq face-font-rescale-alist
+        `((,(format ".*%s.*" cjk-font-name) . ,cjk-font-scale)
+          (,(format ".*%s.*" emoji-font-name) . ,emoji-font-scale))))
+
+;; emacs configuration tweaks
 (use-package emacs
   :init
   ;; set utf-8 environment
@@ -65,10 +95,19 @@
   (column-number-mode)
   (tool-bar-mode -1)
   (global-display-line-numbers-mode 1)
+  (blink-cursor-mode -1)
+  ;; (load-theme 'leuven t)
+  ;; Different computers might need different scaling factors with the
+  ;; same fonts.
+  (cond
+   ;; If MacOS
+   ((eq system-type 'darwin)
+    (my/set-fonts
+     "Menlo" 150
+     "Source Han Serif SC" 1.2
+     "Apple Color Emoji" 0.9)))
   ;; (load-theme 'modus-operandi-tritanopia t)
   ;; (load-theme 'zenburn t)
-  ;; (load-theme 'leuven t)
-  ;; (blink-cursor-mode +1)
   ;; (global-hl-line-mode)
   ;; turn off the annoying bell and make the world quiet.
   (setq ring-bell-function 'ignore)
@@ -83,7 +122,7 @@
   ;; completely hide the following modes
   (eldoc-mode)
   ;; set C language default indentation style
-  (defvar c-indentation-style "k&r")
+  ;; (defvar c-indentation-style "k&r")
   :bind
   ("C-x f" . #'recentf-open)
   ;; ("C-x c" . #'display-fill-column-indicator-mode)
