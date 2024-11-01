@@ -47,7 +47,7 @@
                      cjk-font-scale
                      emoji-font-name
                      emoji-font-scale)
-  "Helper function to set the default, CJK and Emoji fonts."
+  "Helper function to set default, cjk and emoji fonts."
   ;; Set the default font
   (when (member default-font-name (font-family-list))
     (set-face-attribute 'default nil
@@ -76,7 +76,7 @@
   (setq locale-coding-system 'utf-8)
   ;; set the startup frame size
   (setq initial-frame-alist
-	'((height . 300) (width . 100)))
+	'((height . 350) (width . 120)))
   ;; set the ruler if the input characters over 80
   (setq-default fill-column 80)
   ;; (setq frame-resize-pixelwise t)
@@ -96,25 +96,25 @@
   (tool-bar-mode -1)
   (global-display-line-numbers-mode 1)
   (blink-cursor-mode -1)
+  (scroll-bar-mode -1)
+  ;; (desktop-save-mode 1) -- this will cause Emacs to crash (I don't know why)
   ;; (load-theme 'leuven t)
-  ;; Different computers might need different scaling factors with the
-  ;; same fonts.
+  ;; Different computers might need different scaling factors with same fonts.
   (cond
    ;; If MacOS
    ((eq system-type 'darwin)
     (my/set-fonts
-     "Menlo" 150
-     "Source Han Serif SC" 1.2
+     "JetBrains Mono" 140
+     "Source Han Serif SC" 1.15
      "Apple Color Emoji" 0.9)))
-  ;; (load-theme 'modus-operandi-tritanopia t)
-  ;; (load-theme 'zenburn t)
-  ;; (global-hl-line-mode)
   ;; turn off the annoying bell and make the world quiet.
   (setq ring-bell-function 'ignore)
   ;; use extended and enhanced perl mode
   (fset 'perl-mode 'cperl-mode)
   ;; add directory includes other .info documents into the default Info directory
   (add-to-list 'Info-directory-list "~/Developer/Emacs-info/")
+  (add-to-list 'auto-mode-alist '("\\.l$" . flex-mode))
+  (add-to-list 'auto-mode-alist '("\\.y$" . bison-mode))
   ;; customize the display of modeline for major and minor modes
   :delight
   ;; change "Elisp/d" to "EL"
@@ -126,15 +126,17 @@
   :bind
   ("C-x f" . #'recentf-open)
   ;; ("C-x c" . #'display-fill-column-indicator-mode)
-  ("C-x c" . #'compile)
   ("C-x C-p" . #'cperl-perldoc)
   ("C-x e" . #'eww)
+  ("C-c c" . #'compile)
   ("C-c r" . #'restart-emacs)
   ("C-c b" . #'swap-browser)
   ("C-c p" . #'list-packages)
   ("C-c i" . #'ibuffer)
-  ("C-c t" . #'eshell)
-  ("C-c f" . #'avy-goto-char))
+  ("C-c e" . #'eshell)
+  ("C-c v" . #'vterm)
+  ("C-c f" . #'avy-goto-char)
+  ("C-c l" . #'avy-goto-line))
 
 (provide 'freeland-ui)
 ;;; freeland-ui.el ends here

@@ -59,8 +59,12 @@
       (load custom-file)
       (require 'freeland-ui)
       (require 'freeland-packages)
-      ;; (load-theme 'leuven-dark t)
-      (load-theme 'spacemacs-light t)
+      (require 'freeland-lang)
+      (require 'flex)
+      (require 'bison)
+      (require 'org-novelist)
+      ;; (load-library "cweb")
+      ;; (load-theme 'spacemacs-light t)
       ;; put customization (custom-set-variables) into custom.el
       ))
 

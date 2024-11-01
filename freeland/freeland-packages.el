@@ -1,6 +1,6 @@
-;;; freeland-packages.el --- install core packages and configuration for packages
+;;; freeland-packages.el --- install configuration packages. -*- lexical-binding:t -*-
 ;;
-;; Copyright © 2023
+;; Copyright © 2023 Jacky Young
 ;;
 ;; Author: Jacky Young
 
@@ -56,19 +56,27 @@
   ;; (global-set-key (kbd "s-w") 'ace-user-keymap)
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
 
-;;;;;; --- all-the-icons --- ;;;;;;
-(use-package all-the-icons
+;;;;;; --- AUCTex --- ;;;;;;
+;; free variable means that variable should be marked as dynamically scoped
+;; refer to *elisp* manual at section 12.10.5
+;; the following `defvar`s are bypassing warning of free variables
+(defvar TeX-auto-save)
+(defvar TeX-parse-self)
+(defvar TeX-master)
+(defvar TeX-view-program-selection)
+(defvar TeX-source-correlate-start-server)
+(defvar LaTeX-electric-left-right-brace)
+(use-package auctex
   :ensure t
-  :demand t)
-
- ;;;;;; --- all-the-icons-completion --- ;;;;;;
-(use-package all-the-icons-completion
-  :ensure t
-  :after (marginalia all-the-icons)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init
-  ;; (add-hook 'marginalia-mode-hook #'all-the-icons-completion-marginalia-setup)
-  (all-the-icons-completion-mode))
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq-default TeX-master nil)
+  (setq LaTeX-electric-left-right-brace t)
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools"))
+	TeX-source-correlate-start-server t)
+  (add-hook 'TeX-after-compilation-finished-functions
+	    #'TeX-revert-document-buffer))
 
 ;;;;;; --- company --- ;;;;;;
 (use-package company
@@ -80,9 +88,17 @@
   (setq company-minimum-prefix-length 2)
   (setq company-tooltip-align-annotations t)
   (defvar company-cmake-executable "/opt/homebrew/bin/cmake")
-  :config
-  (global-company-mode)
+  :hook
+  ((prog-mode text-mode) . company-mode)
+  ;; :config
+  ;; (global-company-mode)
   :delight)
+
+;;;;;; --- corfu --- ;;;;;;
+(use-package corfu
+  :ensure t
+  :hook
+  ((shell-mode eshell-mode inferior-python-mode inferior-emacs-lisp-mode) . corfu-mode))
 
 ;;;;;; --- consult --- ;;;;;;
 (use-package consult
@@ -159,15 +175,18 @@
   :ensure t
   :defer t
   :init
-  (with-eval-after-load 'python (elpy-enable))
-  (with-eval-after-load 'python (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)
-				      elpy-rpc-python-command "/opt/homebrew/bin/python3.12"
-				      python-shell-interpreter "/opt/homebrew/bin/python3.12"
-				      python-shell-interpreter-args "-i"))
-  ;; bypass the following annoying warning in 'elpy':
-  ;; Warning (python): "Your ‘python-shell-interpreter’ doesn’t seem to support readline,
-  ;; yet ‘python-shell-completion-native-enable’ was t, ..."
-  (setq python-shell-completion-native-enable nil))
+  (advice-add 'python-mode :before 'elpy-enable)
+  :hook
+  (python . hs-minor-mode)
+  (python . company-quickhelp-mode)
+  (python . hl-line-mode)
+  :config
+  (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+  ;; (setq python-shell-interpreter "python3.11" python-shell-interpreter-args "-i")
+  ;; "python3.11 -m -s override_readline" --- site customize
+  ;; (setq python-shell-completion-native-disabled-interpreters '("python3.11"))
+  ;; (setq elpy-rpc--backend-python-command "python3.11")
+  )
 
 ;;;;;; --- exec-path-from-shell --- ;;;;;;
 ;;; ensure environment variables inside Emacs the same as in the user's shell.
@@ -220,26 +239,26 @@
   :hook
   (cperl-mode . lsp-deferred)
   (rust-mode . lsp-deferred)
-  ;; (c++-mode . lsp-deferred)
-  ;; (c-mode . lsp-deferred)
+  (go-mode . lsp-deferred)
+  (c++-mode . lsp-deferred)
+  (c-mode . lsp-deferred)
   (lsp-mode . lsp-enable-which-key-integration)
   :commands
   (lsp lsp-deferred)
   :config
-  ;; (setq lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error"))
   ;; use 'PLS' as the default language server of Perl, which is the best one of
   ;; three ('PLS', 'PerlNavigator', 'Perl::LanguageServer'
-  (setq lsp-pls-executable "~/perl5/bin/pls")
+  (defvar lsp-pls-executable "~/perl5/bin/pls")
   (setq lsp-inlay-hint-enable t)
   ;; Rust specific
-  (setq lsp-rust-analyzer-display-parameter-hints t)
-  (setq lsp-rust-analyzer-diagnostics-enable-experimental t))
+  (defvar lsp-rust-analyzer-display-parameter-hints t)
+  (defvar lsp-rust-analyzer-diagnostics-enable-experimental t))
 
 ;;;;;; --- eglot --- ;;;;;;
-(use-package eglot
-  :demand t
-  :hook
-  ((c-ts-mode c++-mode cmake-mode) . eglot-ensure))
+;; (use-package eglot
+;;   :demand t
+;;   :hook
+;;   ((c-ts-mode c++-mode cmake-mode) . eglot-ensure))
 
 ;;;;;; --- magit --- ;;;;;;
 (use-package magit
@@ -248,18 +267,12 @@
   :init (setq magit-refresh-status-buffer nil)
   :bind (("C-x g" . magit-status)))
 
-;;;;;; --- modus theme --- ;;;;;;
-(use-package modus-themes
-  :ensure t
-  :init
-  (setq modus-themes-org-blocks 'gray-background))
-
 ;;;;;; --- marginalia --- ;;;;;;
 (use-package marginalia
   :ensure t
   :custom
   (marginalia-max-relative-age 0)
-  (marginalia-align 'right)
+  (marginalia-align 'center)
   :init
   (marginalia-mode))
 
@@ -276,6 +289,13 @@
   :hook
   (gfm-mode . markdown-preview-mode))
 
+;;;;;; --- nerd icons completion --- ;;;;;;
+(use-package nerd-icons-completion
+  :after marginalia
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
 ;;;;;; --- orderless --- ;;;;;;
 (use-package orderless
   :ensure t
@@ -287,16 +307,25 @@
 ;;;;;; --- org mode --- ;;;;;;
 (use-package org
   :ensure t
-  :init
-  (setq org-startup-indented t)
-  (setq org-todo-keywords
+  :custom
+  (org-startup-indented t)
+  (org-hide-emphasis-markers t)
+  (org-pretty-entities t)
+  (org-todo-keywords
 	'((sequence "TODO(t)" "VERIFY(v)" "|" "DONE(d)" "CANCELED(c)")))
-  (setq org-todo-keyword-faces
+  (org-todo-keyword-faces
 	'(("VERIFY" . "orange")
 	  ("CANCELED" . (:foreground "gray" :weight bold))))
-  (setq org-log-done 'time)
+  (org-log-done 'time)
+  :init
   (org-babel-do-load-languages 'org-babel-load-languages '((lisp . t))))
 
+;;;;;; --- org-mode-modern --- ;;;;;;
+(use-package org-modern
+  :ensure t
+  :init
+  (with-eval-after-load 'org (global-org-modern-mode)))
+  
 ;;;;;; --- org-roam --- ;;;;;;
 (use-package org-roam
   :ensure t
@@ -321,8 +350,14 @@
   (slime-repl-mode . paredit-mode)
   (racket-mode . paredit-mode)
   (racket-repl-mode . paredit-mode)
-  ;; (cperl-mode . paredit-mode)
+  ;; (l-mode . paredit-mode)
   :delight)
+
+;;;;;; --- pdf-tools --- ;;;;;;
+(use-package pdf-tools
+  :ensure t
+  :init
+  (pdf-tools-install))
 
 ;;;;;; --- rust --- ;;;;;;
 (use-package rustic
@@ -420,6 +455,8 @@
   ((text-mode prog-mode conf-mode snippet-mode) . yas-minor-mode-on)
   :init
   (defvar yas-snippet-dir "~/.emacs.d/snippets"))
+
+;; (add-hook 'inferior-python-mode-hook (lambda () (setq comint-move-point-for-output t)))
 
 (provide 'freeland-packages)
 ;;; freeland-packages.el ends here
